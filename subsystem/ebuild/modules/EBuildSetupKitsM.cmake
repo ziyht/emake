@@ -714,10 +714,8 @@ macro(_SetupLibM)
     EMakeSetTargetPropertyM(${KIT_NAME} KIT_DEPENDS         LIST_VAR ${KIT_DEPENDS})
     EMakeSetTargetPropertyM(${KIT_NAME} KIT_DERECT_DEPENDS  LIST_VAR ${KIT_DEPENDS})
     EMakeSetTargetPropertyM(${KIT_NAME} KIT_LIBRARIES_SYS   LIST_VAR ${KIT_LIBRARIES_SYS})
-    EMakeSetTargetPropertyM(${KIT_NAME} KIT_INCLUDE_DIRS    LIST_VAR ${KIT_INCLUDE_DIRS})
+    EMakeSetTargetPropertyM(${KIT_NAME} KIT_INCLUDE_DIRS    LIST_VAR ${KIT_INCLUDE_DIRS} ${_GLOBAL_INCLUDES})
     EMakeSetTargetPropertyM(${KIT_NAME} KIT_LINK_DIRS       LIST_VAR ${KIT_LINK_DIRS}    APPEND)
-
-
 
     # 设置其它相关的目标属性
     EMakeSetTargetPropertyM(${KIT_NAME} KIT_SOURCES_DIR     VAR      ${LIBS_DIR}/${M_LIB_NAME})
@@ -818,7 +816,7 @@ function(_SetupPlgM)
     EMakeSetTargetPropertyM(${KIT_NAME} KIT_DEPENDS         LIST_VAR ${KIT_DEPENDS})
     EMakeSetTargetPropertyM(${KIT_NAME} KIT_DERECT_DEPENDS  LIST_VAR ${KIT_DEPENDS})
     EMakeSetTargetPropertyM(${KIT_NAME} KIT_LIBRARIES_SYS   LIST_VAR ${KIT_LIBRARIES_SYS})
-    EMakeSetTargetPropertyM(${KIT_NAME} KIT_INCLUDE_DIRS    LIST_VAR ${KIT_INCLUDE_DIRS})
+    EMakeSetTargetPropertyM(${KIT_NAME} KIT_INCLUDE_DIRS    LIST_VAR ${KIT_INCLUDE_DIRS} ${_GLOBAL_INCLUDES})
     EMakeSetTargetPropertyM(${KIT_NAME} KIT_LINK_DIRS       LIST_VAR ${KIT_LINK_DIRS}    APPEND)
 
     # 设置其它相关的目标属性
@@ -918,7 +916,7 @@ function(_SetupAppM)
     EMakeSetTargetPropertyM(${KIT_NAME} KIT_DEPENDS         LIST_VAR ${KIT_DEPENDS})
     EMakeSetTargetPropertyM(${KIT_NAME} KIT_DERECT_DEPENDS  LIST_VAR ${KIT_DEPENDS})
     EMakeSetTargetPropertyM(${KIT_NAME} KIT_LIBRARIES_SYS   LIST_VAR ${KIT_LIBRARIES_SYS})
-    EMakeSetTargetPropertyM(${KIT_NAME} KIT_INCLUDE_DIRS    LIST_VAR ${KIT_INCLUDE_DIRS})
+    EMakeSetTargetPropertyM(${KIT_NAME} KIT_INCLUDE_DIRS    LIST_VAR ${KIT_INCLUDE_DIRS} ${_GLOBAL_INCLUDES})
     EMakeSetTargetPropertyM(${KIT_NAME} KIT_LINK_DIRS       LIST_VAR ${KIT_LINK_DIRS}    APPEND)
 
     # 设置其它相关的目标属性
@@ -1073,6 +1071,7 @@ macro(EBuildSetupKitsM)
 
     _ClearSetupKitBuffer()
     EMakeGetProjectDirF(MAIN_PROJECT_DIR)
+    EMakeGetGlobalPropertyM(_GLOBAL_INCLUDES _GLOBAL_INCLUDES)
 
     foreach(_type EXTS LIBS PLGS APPS PRODS)
         EMakeGetGlobalPropertyM(KNOWN_${_type}_KITS KNOWN_${_type}_KITS NO_CHECK)

@@ -13,3 +13,5 @@
 #        Company:
 #
 # =====================================================================================
+
+EBuildAddGlobalIncludeDir(${CMAKE_CURRENT_LIST_DIR}/include)

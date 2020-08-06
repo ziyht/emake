@@ -1,4 +1,4 @@
-﻿# =====================================================================================
+# =====================================================================================
 #
 #       Filename:  import.cmake
 #
@@ -14,9 +14,9 @@
 #
 # =====================================================================================
 
-set(ETEST_VERSION "1.0.3")  # fix bugs of not create header files for tutorail and benchmark
+set(ETEST_VERSION "1.0.4")  # add etest.h included for all test build target
 
-EMakeInfF("ETest Version: ${EBUILD_VERSION}")
+EMakeInfF("ETest Version: ${ETEST_VERSION}")
 
 include(${SUB_SYSTEM_DIR}/modules/ETestAdd.cmake)
 include(${SUB_SYSTEM_DIR}/modules/ETestEngine.cmake)

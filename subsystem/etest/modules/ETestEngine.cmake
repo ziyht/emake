@@ -115,6 +115,7 @@ function(ETestEngineAddTest i_target)
 
     # 检查和设置依赖
     EBuildCheckDependsM(${i_target} ${M_DEPENDS})
+    target_include_directories(${i_target} PRIVATE ${SUB_SYSTEM_DIR}/include)
     target_link_libraries(${i_target} ${KIT_NAME_LIB} ${KIT_DEPENDS} ${KIT_LIBRARIES_SYS} ${KIT_LINK_DIRS})
 
     if(KIT_IS_QT_PROJECT)

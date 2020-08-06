@@ -1,4 +1,4 @@
-﻿# =====================================================================================
+# =====================================================================================
 #
 #       Filename:  EBuildAddM.cmake
 #
@@ -432,3 +432,8 @@ macro(EBuildAddProdM name on_off doc)
 
 endmacro()
 
+macro(EBuildAddGlobalIncludeDir dir)
+
+    EMakeSetGlobalPropertyM(_GLOBAL_INCLUDES LIST_VAR ${dir} APPEND)
+
+endmacro()

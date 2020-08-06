@@ -29,6 +29,8 @@ EBuildAddAppM(KitName ON|OFF "comment" [CREATE|DELETE] [DEUBG|Debug|D|d])     # 
 EBuildAddProdM(Prod      ON|OFF "comment" [CREATE|DELETE] [DEUBG|Debug|D|d])  # 添加 产品
 EBuildAddProdM(Prod:type ON|OFF "comment" [CREATE|DELETE] [DEUBG|Debug|D|d])  # 添加 版本
 
+EBuildAddGlobalIncludeDir(dir)  # 添加全局的include dir，仅对 lib，plg，app 有效
+
 # =====================================
 # -- step2 Generate
 #
