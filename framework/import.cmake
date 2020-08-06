@@ -18,8 +18,3 @@
 #! import framework
 include(${CMAKE_CURRENT_LIST_DIR}/modules/EmakeFramework.cmake)
 
-EMakeInfF("------------------------------------------")
-EMakeInfF("EMake Version: ${EMAKE_FRAMEWORK_VERSION}")
-
-EMakeSetupConfigInternalM()
-EMakeSetupBuildEnvM()

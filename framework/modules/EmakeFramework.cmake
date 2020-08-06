@@ -41,6 +41,12 @@ include(${_}/EMakeSetupConfigM.cmake)       # 初始化配置
 
 unset(_)
 
+EMakeInfF("------------------------------------------")
+EMakeInfF("EMake Version: ${EMAKE_FRAMEWORK_VERSION}")
+
+EMakeSetupConfigInternalM()
+EMakeSetupBuildEnvM()
+
 # 2019-06-22 13:28 ---------------------------------------
 # emake 1.2.3:
 #    1. 添加 Component 支持，仅 libs

@@ -27,15 +27,12 @@ function(EMakeGetProjectDirF)
         return()
     endif()
 
-    # changed: using CMakeLists.txt directly
-    EMakeSetGlobalPropertyM(MAIN_PROJECT_ROOT_DIR VAR ${CMAKE_CURRENT_SOURCE_DIR})
-    EMakeSetGlobalPropertyM(MAIN_PROJECT_DIR      VAR ${CMAKE_CURRENT_SOURCE_DIR})
-
     if(M_MAIN_PROJECT_ROOT_DIR)
         EMakeGetGlobalPropertyM(MAIN_PROJECT_ROOT_DIR _o_dir NO_CHECK)
         if(NOT ${_o_dir} STREQUAL "")
             set(MAIN_PROJECT_ROOT_DIR ${_o_dir} PARENT_SCOPE)
         else()
+            EMakeSetGlobalPropertyM(MAIN_PROJECT_ROOT_DIR VAR ${CMAKE_CURRENT_SOURCE_DIR})
             set(MAIN_PROJECT_ROOT_DIR_NEEDED 1)
         endif()
     endif()
@@ -45,6 +42,7 @@ function(EMakeGetProjectDirF)
         if(NOT ${_o_dir} STREQUAL "")
             set(MAIN_PROJECT_DIR ${_o_dir} PARENT_SCOPE)
         else()
+            EMakeSetGlobalPropertyM(MAIN_PROJECT_DIR      VAR ${CMAKE_CURRENT_SOURCE_DIR})
             set(MAIN_PROJECT_DIR_NEEDED 1)
         endif()
     endif()
@@ -81,8 +79,6 @@ function(EMakeGetProjectDirF)
         endif()
 
         string(REGEX REPLACE "([A-Z]:|/([^/]*))$" "" _path ${_path})
-
-        emakeinff(${_path})
 
         if(_parent_dir AND NOT _src_dir)
             set(_src_dir ${_path})

@@ -20,8 +20,6 @@ set(ETEST_SYSTEM_DIR   ${SUB_SYSTEM_DIR})
 set(ETEST_MODULE_DIR   ${SUB_SYSTEM_DIR}/cmake)
 set(ETEST_TEMPLATE_DIR ${SUB_SYSTEM_DIR}/template)
 
-include(${ETEST_TEMPLATE_DIR}/CMakeLists.txt)
-
 macro(ETestEngineInitM)
     if(NOT TARGET etest)
         add_custom_target(etest)

@@ -43,6 +43,7 @@ cmake_policy(SET CMP0053 NEW)
 #! --------------------------------
 #! import framework
 #! 在 相关目录中设置 配置
+include(${CMAKE_CURRENT_LIST_DIR}/config.cmake)
 EMakeImport(${CMAKE_CURRENT_LIST_DIR}/framework)
 
 #! --------------------------------

@@ -14,59 +14,94 @@
 #
 # =====================================================================================
 
-macro(EMakeSetupConfigM)
+macro(EMakeRegisterConfigM)
 
-    # 设置源码目录
-    set(EXTS_DIR            "${MAIN_PROJECT_DIR}/src/exts")            # 外部库 所在目录
-    set(LIBS_DIR            "${MAIN_PROJECT_DIR}/src/libs")            # 内部库 所在目录
-    set(PLGS_DIR            "${MAIN_PROJECT_DIR}/src/plugins")         # 插件   所在目录
-    set(APPS_DIR            "${MAIN_PROJECT_DIR}/src/apps")            # 应用   所在目录
-    set(PRODS_DIR           "${MAIN_PROJECT_DIR}/src/products")        # 产品   所在目录
+    EMakeGetProjectDirF(MAIN_PROJECT_DIR)
 
-    # 设置导出位置
-    set(COMMONS_DIR         "${MAIN_PROJECT_DIR}/common")              # 中间文件位置
-    set(EXPORTS_DIR         "${MAIN_PROJECT_DIR}/exports")             # 产品导出位置
+    file(RELATIVE_PATH _dir ${MAIN_PROJECT_DIR}/src/ ${EXTS_DIR})
+    set(EXTS_EXPORTS_DIR ${COMMONS_DIR}/${_dir})
 
-    # 设置构建目录  （注意，在子项目单独编译时，PROJECT_BINARY_DIR 是它自己的构建目录）
-    set(OUTPUT_DIR          "${PROJECT_BINARY_DIR}/build")
-    set(EXTS_OUTPUT_DIR     "${PROJECT_BINARY_DIR}/libs_external")
-    set(LIBS_OUTPUT_DIR     "${OUTPUT_DIR}/libs")
-    set(PLGS_OUTPUT_DIR     "${OUTPUT_DIR}/plugins")
-    set(APPS_OUTPUT_DIR     "${OUTPUT_DIR}/apps")
+    file(RELATIVE_PATH _dir ${MAIN_PROJECT_DIR}/src/ ${LIBS_DIR})
+    set(LIBS_EXPORTS_DIR ${COMMONS_DIR}/${_dir})
 
-    # 设置安装位置  （注意，在子项目单独编译时，PROJECT_BINARY_DIR 是它自己的构建目录）
-    set(INSTALL_INCLUDE_DIR "${PROJECT_BINARY_DIR}/install/include")            # 头文件，暂时无效
-    set(INSTALL_LIB_DIR     "${PROJECT_BINARY_DIR}/install/libs")               # 库文件
-    set(INSTALL_PLG_DIR     "${PROJECT_BINARY_DIR}/install/plugins")            # 插件
-    set(INSTALL_BIN_DIR     "${PROJECT_BINARY_DIR}/install/bin")                # 二进制文件(应用)
+    file(RELATIVE_PATH _dir ${MAIN_PROJECT_DIR}/src/ ${PLGS_DIR})
+    set(PLGS_EXPORTS_DIR ${COMMONS_DIR}/${_dir})
 
-    # 目标后缀
-    set(CMAKE_DEBUG_POSTFIX             ""  CACHE STRING "add a postfix, usually d "    FORCE)
-    set(CMAKE_RELEASE_POSTFIX           ""  CACHE STRING "add a postfix, usually empty" FORCE)
-    set(CMAKE_RELWITHDEBINFO_POSTFIX    ""  CACHE STRING "add a postfix, usually empty" FORCE)
-    set(CMAKE_MINSIZEREL_POSTFIX        ""  CACHE STRING "add a postfix, usually empty" FORCE)
+    file(RELATIVE_PATH _dir ${MAIN_PROJECT_DIR}/src/ ${APPS_DIR})
+    set(APPS_EXPORTS_DIR ${COMMONS_DIR}/${_dir})
 
-    set(EXT_DEBUG_POSTFIX             )      # 若不设置，则继承 CMAKE 配置，注意，对于外部库，外部库的内部配置可能覆盖这些配置
-    set(EXT_RELEASE_POSTFIX           )
-    set(EXT_RELWITHDEBINFO_POSTFIX    )
-    set(EXT_MINSIZEREL_POSTFIX        )
+    EMakeSetGlobalPropertyM(EXTS_DIR     VAR ${EXTS_DIR})
+    EMakeSetGlobalPropertyM(LIBS_DIR     VAR ${LIBS_DIR})
+    EMakeSetGlobalPropertyM(PLGS_DIR     VAR ${PLGS_DIR})
+    EMakeSetGlobalPropertyM(APPS_DIR     VAR ${APPS_DIR})
+    EMakeSetGlobalPropertyM(PRODS_DIR    VAR ${PRODS_DIR})
 
-    set(LIB_DEBUG_POSTFIX             )
-    set(LIB_RELEASE_POSTFIX           )
-    set(LIB_RELWITHDEBINFO_POSTFIX    )
-    set(LIB_MINSIZEREL_POSTFIX        )
+    EMakeSetGlobalPropertyM(COMMONS_DIR  VAR ${COMMONS_DIR})
+    EMakeSetGlobalPropertyM(EXPORTS_DIR  VAR ${EXPORTS_DIR})
 
-    set(PLG_DEBUG_POSTFIX             "")
-    set(PLG_RELEASE_POSTFIX           "")
-    set(PLG_RELWITHDEBINFO_POSTFIX    "")
-    set(PLG_MINSIZEREL_POSTFIX        "")
+    EMakeSetGlobalPropertyM(BUILD_DIR    VAR ${BUILD_DIR})
 
-    set(APP_DEBUG_POSTFIX             )
-    set(APP_RELEASE_POSTFIX           )
-    set(APP_RELWITHDEBINFO_POSTFIX    )
-    set(APP_MINSIZEREL_POSTFIX        )
+    foreach(_mode DEBUG RELEASE RELWITHDEBINFO MINSIZEREL)
 
-    # 自动拷贝机制
-    set(AUTO_COPY                   ON)
+        if(NOT DEFINED EXT_${_mode}_POSTFIX)
+            set(EXT_${_mode}_POSTFIX ${CMAKE_${_mode}_POSTFIX})
+        endif()
+
+        if(NOT DEFINED LIB_${_mode}_POSTFIX)
+            set(LIB_${_mode}_POSTFIX ${CMAKE_${_mode}_POSTFIX})
+        endif()
+
+        if(NOT DEFINED PLG_${_mode}_POSTFIX)
+            set(PLG_${_mode}_POSTFIX ${CMAKE_${_mode}_POSTFIX})
+        endif()
+
+        if(NOT DEFINED APP_${_mode}_POSTFIX)
+            set(APP_${_mode}_POSTFIX ${CMAKE_${_mode}_POSTFIX})
+        endif()
+
+    endforeach()
+
+    if(NOT DEFINED AUTO_COPY OR AUTO_COPY)
+        set(AUTO_COPY ON)
+    else()
+        set(AUTO_COPY OFF)
+    endif()
+
+    EMakeInfF("Auto Copy : ${AUTO_COPY}")
 
 endmacro()
+
+macro(EMakeSetupSingleBuildM)
+
+    # 设置 project
+    EMakeGetNameFromWholePathF(${CMAKE_CURRENT_SOURCE_DIR} KIT_NAME)
+    project(${KIT_NAME})
+
+    set(_my_dir ${CMAKE_CURRENT_SOURCE_DIR})
+    set(_need   1)
+
+    if    (${_my_dir} MATCHES ${EXTS_DIR})
+        set(KIT_TYPE "EXTS")
+    elseif(${_my_dir} MATCHES ${LIBS_DIR})
+        set(KIT_TYPE "LIBS")
+    elseif(${_my_dir} MATCHES ${PLGS_DIR})
+        set(KIT_TYPE "PLGS")
+    elseif(${_my_dir} MATCHES ${APPS_DIR})
+        set(KIT_TYPE "APPS")
+    elseif(${_my_dir} MATCHES ${PRODS_DIR})
+        EMakeErrF("single build not supported for prodcut/type ")
+    else()
+        #EMakeErrF("internal err: unkown types of target, can not found matches dir, please check you setting on EMakeSetupConfig.cmake\ncurrent dir is ${_my_dir}")
+        set(_need)
+    endif()
+
+    if(_need)
+        EMakeSetTargetPropertyM(${KIT_NAME} BUILD_IN_SINGLE_MODE VAR 1)
+        EMakeSetTargetPropertyM(${KIT_NAME} KIT_TYPE             VAR ${KIT_TYPE})
+    endif()
+
+endmacro()
+
+EBuildSetupConfigM()
+EMakeRegisterConfigM()
+EMakeSetupSingleBuildM()
